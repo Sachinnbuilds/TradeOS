@@ -1,0 +1,50 @@
+# =========================
+# TraderOS .gitignore
+# =========================
+
+# --- Operating System ---
+.DS_Store
+Thumbs.db
+
+# --- IDEs and Editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*.eclipse/
+
+# --- Java & Spring Boot (Backend) ---
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# --- Node & React (Frontend) ---
+node_modules/
+dist/
+build/
+.npm
+.eslintcache
+
+# --- Docker & Infrastructure ---
+# Ignore local database volumes and message bus data to prevent massive commits
+docker/postgres-data/
+docker/redpanda-data/
+docker/redis-data/
+.env
+
+# --- AI & Python (If you use scripts for testing) ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- Trade Data & Logs ---
+# Never commit your personal trading CSVs or generated reports
+*.csv
+*.log
+logs/
+data/raw-trades/
