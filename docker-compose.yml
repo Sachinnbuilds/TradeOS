@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 1. Primary Database + Vector Store
+  postgres:
+    image: ankane/pgvector:v0.5.1 # PostgreSQL 15/16 with pgvector pre-installed
+    container_name: traderos-postgres
+    environment:
+      POSTGRES_USER: traderos
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: traderos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # 2. Event Bus / Message Broker (Kafka Compatible)
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: traderos-redpanda
+    command:
+      - redpanda
+      - start
+      - --smp 1
+      - --memory 1G
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+    ports:
+      - "19092:19092" # External port mapped to your local machine
+    volumes:
+      - ./docker/redpanda-data:/var/lib/redpanda/data
+    restart: unless-stopped
+
+  # 3. Distributed Cache
+  redis:
+    image: redis:7-alpine
+    container_name: traderos-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis-data:/data
+    restart: unless-stopped
